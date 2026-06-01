@@ -61,6 +61,14 @@ class DataSource(object):
         self.min = self.config[VOLUME_MIN]
         self.max_in_ui = self.config[VOLUME_MAX]
         self.max_in_pipe = self.config[VOLUME_MAX_IN_PIPE]
+        # Volumio meter sensitivity (gain) in dB, applied to pipe levels.
+        # 0 dB = unity. Positive dB lifts deflection for quiet / ReplayGain material.
+        # Defaults to 0.0 when the key is absent (older config.txt).
+        try:
+            self.gain_db = float(self.config.get(VOLUME_GAIN_DB, 0.0))
+        except Exception:
+            self.gain_db = 0.0
+        self.gain_mult = 10.0 ** (self.gain_db / 20.0) if self.gain_db > 0.0 else 1.0
         
         self.v = 0
         self.step = self.config[STEP]
@@ -283,8 +291,8 @@ class DataSource(object):
             if length == 0:
                 return (0, 0, 0)
             
-            new_left = int(self.max_in_ui * ((data[length - 4] + (data[length - 3] << 8)) / self.max_in_pipe))
-            new_right = int(self.max_in_ui * ((data[length - 2] + (data[length - 1] << 8)) / self.max_in_pipe))
+            new_left = int(self.max_in_ui * ((data[length - 4] + (data[length - 3] << 8)) / self.max_in_pipe) * self.gain_mult)
+            new_right = int(self.max_in_ui * ((data[length - 2] + (data[length - 1] << 8)) / self.max_in_pipe) * self.gain_mult)
             new_mono = self.get_mono(new_left, new_right)
             
             left = self.get_channel(self.previous_left, new_left)
