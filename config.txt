@@ -62,6 +62,7 @@ volume.min = 0.0
 volume.max = 100.0
 volume.max.in.pipe = 100.0
 volume.gain.db = 0
+volume.gain.db.source =
 step = 6
 mono.algorithm = average
 stereo.algorithm = new
