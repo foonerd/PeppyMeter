@@ -225,7 +225,8 @@ class Meter(Container):
         Component.draw() passes bounding_box as the blit source rect into the
         indicator image. Using screen coordinates here selects pixels outside
         the image and can make the indicator appear missing until the first
-        volume update rewrites the rect.
+        volume update rewrites the rect. LinearAnimator must seed its
+        screen-space previous_rect from content_x/content_y, not from this box.
         """
         w, h = comp.content[1].get_size()
         comp.bounding_box.x = 0

@@ -70,8 +70,14 @@ class LinearAnimator(object):
                 self._flip_x(self.components[1].content[1]),
             )
 
-        self.previous_rect_left = self.components[1].bounding_box.copy()
-        self.previous_rect_right = self.components[2].bounding_box.copy()
+        # previous_rect_* is screen-space dirty area for draw_bgr_fgr.
+        # reset_mask() leaves bounding_box in image-local coords (blit source);
+        # copying that here seeds (0,0) and the first volume update unions a
+        # huge wipe that can erase other layers (e.g. vinyl/cdart under meters).
+        self.previous_rect_left = pygame.Rect(
+            self.components[1].content_x, self.components[1].content_y, 1, 1)
+        self.previous_rect_right = pygame.Rect(
+            self.components[2].content_x, self.components[2].content_y, 1, 1)
         self.previous_volume_left = self.previous_volume_right = 0.0
 
     @staticmethod
