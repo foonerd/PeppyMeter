@@ -329,12 +329,12 @@ class ConfigFileParser(object):
         d[INDICATOR_TYPE] = config_file[section].get(INDICATOR_TYPE, None)
         # Same boolean semantics as left.needle.flip / right.needle.flip.
         # Raw .get() returned strings, so flip.*.x = False was truthy in Python.
-        d[FLIP_LEFT_X] = self._get_optional_boolean(config_file, section, FLIP_LEFT_X)
-        d[FLIP_RIGHT_X] = self._get_optional_boolean(config_file, section, FLIP_RIGHT_X)
+        d[FLIP_LEFT_X] = self.get_optional_boolean(config_file, section, FLIP_LEFT_X)
+        d[FLIP_RIGHT_X] = self.get_optional_boolean(config_file, section, FLIP_RIGHT_X)
 
         return d
 
-    def _get_optional_boolean(self, config_file, section, key):
+    def get_optional_boolean(self, config_file, section, key):
         """Parse an optional meters.txt boolean.
 
         Missing or empty => False.
