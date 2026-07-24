@@ -57,17 +57,17 @@ class LinearAnimator(object):
         # Flip through a detached copy, then convert_alpha so the result stays
         # blit-safe across pygame/SDL backends (some desktop drivers otherwise
         # draw a flipped indicator as empty / invisible).
-        if self._as_bool(flip_right_x):
+        if self.as_bool(flip_right_x):
             self.right_origin_x = self.components[2].content_x
             self.components[2].content = (
                 self.components[2].content[0],
-                self._flip_x(self.components[2].content[1]),
+                self.flip_x(self.components[2].content[1]),
             )
 
-        if self._as_bool(flip_left_x):
+        if self.as_bool(flip_left_x):
             self.components[1].content = (
                 self.components[1].content[0],
-                self._flip_x(self.components[1].content[1]),
+                self.flip_x(self.components[1].content[1]),
             )
 
         # previous_rect_* is screen-space dirty area for draw_bgr_fgr.
@@ -81,7 +81,7 @@ class LinearAnimator(object):
         self.previous_volume_left = self.previous_volume_right = 0.0
 
     @staticmethod
-    def _as_bool(value):
+    def as_bool(value):
         """Normalize flip flags (bool or meters.txt-style string)."""
         if isinstance(value, bool):
             return value
@@ -90,7 +90,7 @@ class LinearAnimator(object):
         return str(value).strip().lower() in ("1", "true", "yes", "on")
 
     @staticmethod
-    def _flip_x(surface):
+    def flip_x(surface):
         """Horizontal flip that does not mutate a shared cached surface."""
         src = surface.copy() if hasattr(surface, "copy") else surface
         flipped = pygame.transform.flip(src, True, False)
